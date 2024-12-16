@@ -33,6 +33,16 @@ public class GrupoController {
         return ResponseEntity.ok(Grupos);
     }
 
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<GrupoDTO> getById(@PathVariable(name="id") Long id) {
+        Grupo grupoDB = this.grupoRepository.findById(id).orElse(null);
+
+        if (grupoDB != null) {
+            return ResponseEntity.ok(new GrupoDTO(grupoDB.getId(), grupoDB.getNome()));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
     @PostMapping
     public ResponseEntity<?> save(@RequestBody GrupoDTO grupoDTO){
         Grupo novoGrupo = new Grupo();

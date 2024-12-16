@@ -37,12 +37,25 @@ public class ProjetoController {
         return ResponseEntity.ok(Projetos);
     }
 
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<ProjetoDTO> getById(@PathVariable(name = "id") Long id) {
+        Projeto projetoDB = this.projetoRepository.findById(id).orElse(null);
+
+        if (projetoDB != null) {
+            return ResponseEntity.ok(new ProjetoDTO(projetoDB.getId(), projetoDB.getNome(), projetoDB.getUrl(), projetoDB.getBranch()));
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
     @PostMapping
     public ResponseEntity<?> save(@RequestBody ProjetoDTO projetoDTO){
         Projeto novoProjeto = new Projeto();
         novoProjeto.setNome(projetoDTO.nome());
         novoProjeto.setBranch(projetoDTO.branch());
         novoProjeto.setUrl(projetoDTO.url());
+
+        //TODO AQUI TAMBEM DEVE SALVAR O ID GRUPO RELACIONADO
 
         this.projetoRepository.save(novoProjeto);
         return ResponseEntity.ok(novoProjeto);
