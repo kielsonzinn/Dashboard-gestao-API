@@ -41,9 +41,11 @@ public class ProjetoController {
     public ResponseEntity<?> save(@RequestBody ProjetoDTO projetoDTO){
         Projeto novoProjeto = new Projeto();
         novoProjeto.setNome(projetoDTO.nome());
+        novoProjeto.setBranch(projetoDTO.branch());
+        novoProjeto.setUrl(projetoDTO.url());
 
         this.projetoRepository.save(novoProjeto);
-        return ResponseEntity.ok(projetoDTO);
+        return ResponseEntity.ok(novoProjeto);
     }
 
     @PutMapping(path = "/{id}")

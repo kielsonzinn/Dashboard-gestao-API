@@ -13,7 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "PROJETOS")
 public class Projeto {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "projeto_seq")
     @SequenceGenerator(name = "projeto_seq", sequenceName = "projeto_seq", allocationSize = 1)

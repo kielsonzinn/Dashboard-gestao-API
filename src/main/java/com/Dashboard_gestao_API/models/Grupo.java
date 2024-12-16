@@ -14,7 +14,7 @@ import lombok.Setter;
 public class Grupo {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "grupo_seq")
-    @SequenceGenerator(name = "grupo_seq", sequenceName = "grupo_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "grupo_seq", sequenceName = "grupo_seq", allocationSize = 1)
     private Long id;
     private String nome;
 }
