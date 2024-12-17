@@ -25,10 +25,13 @@ public class Execucao {
     @JoinColumn(name = "projeto_id")
     private Projeto projeto;
 
-
-    private LocalDateTime dataHoraExecucao;
+    private String descricao;
 
     private LocalDateTime dataHoraSolicitacao;
+
+    private LocalDateTime dataHoraIniciada;
+
+    private LocalDateTime dataHoraFinalizada;
 
     private Integer quantidadeIssue;
 

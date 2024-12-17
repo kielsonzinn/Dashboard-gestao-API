@@ -40,7 +40,7 @@ public class ExecucaoController {
         List<ExecucaoDTO> dtos = new ArrayList<>();
 
         for (Execucao execucao : execucoes) {
-            dtos.add(new ExecucaoDTO(execucao.getId(), new ProjetoDTO(execucao.getProjeto().getId(), execucao.getProjeto().getNome(), execucao.getProjeto().getUrl(), execucao.getProjeto().getBranch()), execucao.getDataHoraExecucao(), execucao.getDataHoraSolicitacao(), execucao.getQuantidadeIssue(), execucao.getStatus()));
+            dtos.add(new ExecucaoDTO(execucao.getId(), execucao.getDescricao(), new ProjetoDTO(execucao.getProjeto().getId(), execucao.getProjeto().getNome(), execucao.getProjeto().getUrl(), execucao.getProjeto().getBranch(), execucao.getProjeto().getIdGrupo()), execucao.getDataHoraIniciada(), execucao.getDataHoraSolicitacao(), execucao.getQuantidadeIssue(), execucao.getStatus()));
         }
 
         return ResponseEntity.ok(dtos);
@@ -51,7 +51,7 @@ public class ExecucaoController {
         Execucao execucao = this.execucaoRepository.findById(id).orElse(null);
 
         if (execucao != null) {
-            return ResponseEntity.ok(new ExecucaoDTO(execucao.getId(), new ProjetoDTO(execucao.getProjeto().getId(), execucao.getProjeto().getNome(), execucao.getProjeto().getUrl(), execucao.getProjeto().getBranch()), execucao.getDataHoraExecucao(), execucao.getDataHoraSolicitacao(), execucao.getQuantidadeIssue(), execucao.getStatus()));
+            return ResponseEntity.ok(new ExecucaoDTO(execucao.getId(), execucao.getDescricao(), new ProjetoDTO(execucao.getProjeto().getId(), execucao.getProjeto().getNome(), execucao.getProjeto().getUrl(), execucao.getProjeto().getBranch(), execucao.getProjeto().getIdGrupo()), execucao.getDataHoraIniciada(), execucao.getDataHoraSolicitacao(), execucao.getQuantidadeIssue(), execucao.getStatus()));
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -94,7 +94,7 @@ public class ExecucaoController {
 
         Execucao novaExecucao = new Execucao();
         novaExecucao.setProjeto(projetoRepository.findById(execucaoInsertDTO.projeto().id()).orElse(null));
-        novaExecucao.setDataHoraExecucao(LocalDateTime.now());
+        novaExecucao.setDataHoraIniciada(LocalDateTime.now());
         novaExecucao.setStatus(0);
 
         if (novaExecucao.getProjeto() == null) {

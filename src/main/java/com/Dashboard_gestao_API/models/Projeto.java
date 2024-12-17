@@ -20,4 +20,5 @@ public class Projeto {
     private String nome;
     private String url;
     private String branch;
+    private Long idGrupo;
 }

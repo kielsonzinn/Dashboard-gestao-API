@@ -36,7 +36,8 @@ public class ProjetoController {
                     projeto.getId(),
                     projeto.getNome(),
                     projeto.getUrl(),
-                    projeto.getBranch()
+                    projeto.getBranch(),
+                    projeto.getIdGrupo()
             );
             Projetos.add(projetoDTO);
         }
@@ -48,7 +49,7 @@ public class ProjetoController {
         Projeto projetoDB = this.projetoRepository.findById(id).orElse(null);
 
         if (projetoDB != null) {
-            return ResponseEntity.ok(new ProjetoDTO(projetoDB.getId(), projetoDB.getNome(), projetoDB.getUrl(), projetoDB.getBranch()));
+            return ResponseEntity.ok(new ProjetoDTO(projetoDB.getId(), projetoDB.getNome(), projetoDB.getUrl(), projetoDB.getBranch(), projetoDB.getIdGrupo()));
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -63,7 +64,7 @@ public class ProjetoController {
             List<IssueDTO> dtos = new ArrayList<>();
 
             for (Issue issue : issues) {
-                dtos.add(new IssueDTO(issue.getId(), issue.getDescricao(), issue.getArquivo(), issue.getLinhaInicial(), issue.getLinhaFinal()));
+                dtos.add(new IssueDTO(issue.getId(), issue.getDescricao(), issue.getArquivo(), issue.getLinhaInicial(), issue.getLinhaFinal(),issue.getTipoIssue()));
             }
 
             return ResponseEntity.ok(dtos);

@@ -31,4 +31,6 @@ public class Issue {
 
     private Integer linhaFinal;
 
+    private String tipoIssue;
+
 }
