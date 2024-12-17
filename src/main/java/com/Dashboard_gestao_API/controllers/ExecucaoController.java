@@ -77,7 +77,10 @@ public class ExecucaoController {
         if (execucao != null) {
             execucao.setStatus(0);
             this.execucaoRepository.save(execucao);
-            kafkaService.sendMessage("execution", execucao);
+
+            List<Execucao> execucoes = new ArrayList<>();
+            execucoes.add(execucao);
+            kafkaService.sendMessage("execution", execucoes);
 
             return ResponseEntity.ok("Execução adicionado para processamento");
         }
@@ -99,7 +102,10 @@ public class ExecucaoController {
         }
 
         this.execucaoRepository.save(novaExecucao);
-        kafkaService.sendMessage("execution", novaExecucao);
+
+        List<Execucao> execucoes = new ArrayList<>();
+        execucoes.add(novaExecucao);
+        kafkaService.sendMessage("execution", execucoes);
 
         return ResponseEntity.ok(novaExecucao);
 
