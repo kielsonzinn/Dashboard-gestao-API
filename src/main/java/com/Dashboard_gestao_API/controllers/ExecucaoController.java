@@ -28,7 +28,7 @@ public class ExecucaoController {
 
     private final KafkaProducerService kafkaService;
 
-    public ExecucaoController(ExecucaoRepository execucaoRepository, ProjetoRepository projetoRepository, KafkaTemplate<String, String> kafkaTemplate, KafkaProducerService kafkaService) {
+    public ExecucaoController(ExecucaoRepository execucaoRepository, ProjetoRepository projetoRepository, KafkaProducerService kafkaService) {
         this.execucaoRepository = execucaoRepository;
         this.projetoRepository = projetoRepository;
         this.kafkaService = kafkaService;
@@ -77,9 +77,7 @@ public class ExecucaoController {
         if (execucao != null) {
             execucao.setStatus(0);
             this.execucaoRepository.save(execucao);
-
-            //TODO Enviar um objeto (Json) para o kafka
-            kafkaService.sendMessage("execution", getPendingExecutionMessage(execucao.getId(), execucao.getProjeto().getId()) );
+            kafkaService.sendMessage("execution", execucao);
 
             return ResponseEntity.ok("Execução adicionado para processamento");
         }
@@ -101,19 +99,10 @@ public class ExecucaoController {
         }
 
         this.execucaoRepository.save(novaExecucao);
-
-         //TODO Enviar um objeto (Json) para o kafka
-        kafkaService.sendMessage("execution", getPendingExecutionMessage(novaExecucao.getId(), novaExecucao.getProjeto().getId()) );
+        kafkaService.sendMessage("execution", novaExecucao);
 
         return ResponseEntity.ok(novaExecucao);
 
-    }
-
-    private String getPendingExecutionMessage(Long idExecution, Long idProject) {
-        return String.format(
-                "{ 'pending': [{ id_execution: %d, id_project: %d }] }",
-                idExecution,
-                idProject);
     }
 
 }
