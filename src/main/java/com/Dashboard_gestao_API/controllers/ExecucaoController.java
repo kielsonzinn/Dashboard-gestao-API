@@ -8,8 +8,10 @@ import com.Dashboard_gestao_API.models.Execucao;
 import com.Dashboard_gestao_API.models.Grupo;
 import com.Dashboard_gestao_API.repositories.ExecucaoRepository;
 import com.Dashboard_gestao_API.repositories.ProjetoRepository;
+import com.Dashboard_gestao_API.services.KafkaProducerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -24,10 +26,12 @@ public class ExecucaoController {
 
     private final ProjetoRepository projetoRepository;
 
+    private final KafkaProducerService kafkaService;
 
-    public ExecucaoController(ExecucaoRepository execucaoRepository, ProjetoRepository projetoRepository) {
+    public ExecucaoController(ExecucaoRepository execucaoRepository, ProjetoRepository projetoRepository, KafkaTemplate<String, String> kafkaTemplate, KafkaProducerService kafkaService) {
         this.execucaoRepository = execucaoRepository;
         this.projetoRepository = projetoRepository;
+        this.kafkaService = kafkaService;
     }
 
     @GetMapping
@@ -73,7 +77,10 @@ public class ExecucaoController {
         if (execucao != null) {
             execucao.setStatus(0);
             this.execucaoRepository.save(execucao);
-            //TODO ADICIONAR MENSAGEM NA FILA DO KAFKA
+
+            //TODO Enviar um objeto (Json) para o kafka
+            kafkaService.sendMessage("execution", getPendingExecutionMessage(execucao.getId(), execucao.getProjeto().getId()) );
+
             return ResponseEntity.ok("Execução adicionado para processamento");
         }
 
@@ -94,10 +101,19 @@ public class ExecucaoController {
         }
 
         this.execucaoRepository.save(novaExecucao);
-        //TODO ADICIONAR MENSAGEM NA FILA DO KAFKA
+
+         //TODO Enviar um objeto (Json) para o kafka
+        kafkaService.sendMessage("execution", getPendingExecutionMessage(novaExecucao.getId(), novaExecucao.getProjeto().getId()) );
 
         return ResponseEntity.ok(novaExecucao);
 
+    }
+
+    private String getPendingExecutionMessage(Long idExecution, Long idProject) {
+        return String.format(
+                "{ 'pending': [{ id_execution: %d, id_project: %d }] }",
+                idExecution,
+                idProject);
     }
 
 }
