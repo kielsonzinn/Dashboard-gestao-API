@@ -32,3 +32,14 @@ git clone git@github.com:kielsonzinn/Dashboard-gestao-API.git
 git clone git@github.com:andreruizrt/automatic-code-review-dashboard-runner.git
 ```
 - So rodar a aplicaçao
+
+### Segunda entrega
+
+- gateway
+    - autenticao
+        - spring login social
+        - chamar para autenticar
+        - chamar para validar se o token é valido
+            - feign client para o dashboard chamar a auth
+- validator
+- swagger
