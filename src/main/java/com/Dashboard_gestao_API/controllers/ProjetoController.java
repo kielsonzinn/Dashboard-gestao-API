@@ -1,8 +1,11 @@
 package com.Dashboard_gestao_API.controllers;
 
+import com.Dashboard_gestao_API.dtos.IssueDTO;
 import com.Dashboard_gestao_API.dtos.ProjetoDTO;
 import com.Dashboard_gestao_API.models.Grupo;
+import com.Dashboard_gestao_API.models.Issue;
 import com.Dashboard_gestao_API.models.Projeto;
+import com.Dashboard_gestao_API.repositories.IssueRepository;
 import com.Dashboard_gestao_API.repositories.ProjetoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +20,11 @@ public class ProjetoController {
 
     private ProjetoRepository projetoRepository;
 
-    public ProjetoController(ProjetoRepository projetoRepository) {
+    private final IssueRepository issueRepository;
+
+    public ProjetoController(ProjetoRepository projetoRepository, IssueRepository issueRepository) {
         this.projetoRepository = projetoRepository;
+        this.issueRepository = issueRepository;
     }
 
     @GetMapping
@@ -30,11 +36,41 @@ public class ProjetoController {
                     projeto.getId(),
                     projeto.getNome(),
                     projeto.getUrl(),
-                    projeto.getBranch()
+                    projeto.getBranch(),
+                    projeto.getIdGrupo()
             );
             Projetos.add(projetoDTO);
         }
         return ResponseEntity.ok(Projetos);
+    }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<ProjetoDTO> getById(@PathVariable(name = "id") Long id) {
+        Projeto projetoDB = this.projetoRepository.findById(id).orElse(null);
+
+        if (projetoDB != null) {
+            return ResponseEntity.ok(new ProjetoDTO(projetoDB.getId(), projetoDB.getNome(), projetoDB.getUrl(), projetoDB.getBranch(), projetoDB.getIdGrupo()));
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
+    @GetMapping(path = "/{id}/issues")
+    public ResponseEntity<List<IssueDTO>> getIssuesById(@PathVariable(name = "id") Long id) {
+        Projeto projetoDB = this.projetoRepository.findById(id).orElse(null);
+
+        if (projetoDB != null) {
+            List<Issue> issues = this.issueRepository.findAllByProjetoEquals(projetoDB);
+            List<IssueDTO> dtos = new ArrayList<>();
+
+            for (Issue issue : issues) {
+                dtos.add(new IssueDTO(issue.getId(), issue.getDescricao(), issue.getArquivo(), issue.getLinhaInicial(), issue.getLinhaFinal(),issue.getTipoIssue()));
+            }
+
+            return ResponseEntity.ok(dtos);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     @PostMapping
@@ -43,6 +79,8 @@ public class ProjetoController {
         novoProjeto.setNome(projetoDTO.nome());
         novoProjeto.setBranch(projetoDTO.branch());
         novoProjeto.setUrl(projetoDTO.url());
+
+        //TODO AQUI TAMBEM DEVE SALVAR O ID GRUPO RELACIONADO
 
         this.projetoRepository.save(novoProjeto);
         return ResponseEntity.ok(novoProjeto);

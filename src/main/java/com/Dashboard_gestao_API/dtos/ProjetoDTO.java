@@ -4,6 +4,7 @@ public record ProjetoDTO(
         Long id,
         String nome,
         String url,
-        String branch
+        String branch,
+        Long idGrupo
 ) {
 }
