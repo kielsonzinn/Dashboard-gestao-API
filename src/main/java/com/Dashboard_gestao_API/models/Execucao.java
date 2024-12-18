@@ -33,6 +33,8 @@ public class Execucao {
 
     private LocalDateTime dataHoraFinalizada;
 
+    private LocalDateTime dataHoraExecucao;
+
     private Integer quantidadeIssue;
 
     /*
