@@ -1,6 +1,8 @@
 package com.Dashboard_gestao_API.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,4 +23,9 @@ public class Projeto {
     private String url;
     private String branch;
     private Long idGrupo;
+
+
+    public void setIdGrupo(Long idGrupo) {
+        this.idGrupo = idGrupo;
+    }
 }
